@@ -467,7 +467,8 @@ public class Checkerboard {
     }
 
     private void makeKing(int row, int col) {
-        board[getIndex(row, col)].ifPresent(Piece::kingMe);
+        int i = getIndex(row, col);
+        board[i] = board[i].map(Piece::kinged);
     }
 
     // Pre: legal (row, col)

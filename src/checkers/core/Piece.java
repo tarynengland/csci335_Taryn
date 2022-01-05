@@ -34,8 +34,10 @@ public class Piece {
         return result;
     }
 
-    public void kingMe() {
-        this.king = true;
+    public Piece kinged() {
+        Piece kinged = new Piece(this.color);
+        kinged.king = true;
+        return kinged;
     }
 
     public boolean isKing() {return this.king;}

@@ -2,7 +2,6 @@ package checkers.gui;
 
 import checkers.core.*;
 import search.core.AIReflector;
-import search.core.AIReflector1;
 
 import java.awt.*;
 import java.awt.event.*;
