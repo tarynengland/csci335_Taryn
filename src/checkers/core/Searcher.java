@@ -1,7 +1,6 @@
 package checkers.core;
 
 import search.core.AIReflector;
-import search.core.AIReflector1;
 
 import javax.swing.JOptionPane;
 
