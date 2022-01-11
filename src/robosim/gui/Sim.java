@@ -1,10 +1,7 @@
 package robosim.gui;
 
-import handwriting.gui.DrawingEditor;
 import robosim.ai.Controller;
 import robosim.core.SimObjMaker;
-import robosim.core.SimObject;
-import robosim.core.Simulator;
 import search.core.AIReflector;
 
 import javax.swing.*;
@@ -60,7 +57,7 @@ public class Sim extends JFrame {
                 halt();
                 sim.reset();
                 timer.start();
-            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
+            } catch (Exception ex) {
                 oops(ex);
             }
         });
@@ -75,7 +72,7 @@ public class Sim extends JFrame {
                     setupController();
                 }
                 advanceSimulation();
-            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
+            } catch (Exception ex) {
                 oops(ex);
             }
         });
@@ -89,7 +86,7 @@ public class Sim extends JFrame {
                 setupController();
                 halt();
                 sim.reset();
-            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
+            } catch (Exception ex) {
                 oops(ex);
             }
         });
