@@ -20,6 +20,8 @@ public class SimPanel extends JPanel {
         sim = new Simulator(getWidth(), getHeight());
     }
 
+    Simulator getSim() {return sim;}
+
     protected void paintComponent(Graphics gc) {
         super.paintComponent(gc);
         sim.resize(getWidth(), getHeight());
@@ -31,6 +33,10 @@ public class SimPanel extends JPanel {
     public void add(SimObject obj) {
         sim.add(obj);
         repaint();
+    }
+
+    public void reset() {
+        sim.reset();
     }
 
     public void openFrom(File openee) throws IOException {
