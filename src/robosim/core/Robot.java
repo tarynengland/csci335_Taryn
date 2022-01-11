@@ -7,7 +7,7 @@ public class Robot extends SimObject {
 	private double vTranslational, vAngular;
 	
 	public static final double RADIUS = 5.0;
-	public static final double FORWARD_VELOCITY = 0.5, ANGULAR_VELOCITY = Math.PI / 4;
+	public static final double FORWARD_VELOCITY = 1, ANGULAR_VELOCITY = Math.PI / 4;
 	public static final double SONAR_WIDTH = Math.PI / 6;
 	
 	public Robot(double x, double y, double heading) {

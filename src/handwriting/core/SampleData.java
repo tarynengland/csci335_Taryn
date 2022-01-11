@@ -1,6 +1,8 @@
 package handwriting.core;
 
 
+import learning.Duple;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -11,7 +13,7 @@ public class SampleData {
 	private boolean firstDrawingAdded;
 	
 	public SampleData() {
-		labelToDrawing = new LinkedHashMap<String,ArrayList<Drawing>>();
+		labelToDrawing = new LinkedHashMap<>();
 		firstDrawingAdded = false;
 	}
 
@@ -106,10 +108,9 @@ public class SampleData {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		for (String label: allLabels()) {
-			result.append(label + ":");
+			result.append(label).append(":");
 			for (int i = 0; i < numDrawingsFor(label); ++i) {
-				result.append(getDrawing(label, i).toString());
-				result.append(":");
+				result.append(getDrawing(label, i).toString()).append(":");
 			}
 			result.deleteCharAt(result.length() - 1);
 			result.append("\n");

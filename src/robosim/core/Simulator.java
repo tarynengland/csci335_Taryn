@@ -2,8 +2,6 @@ package robosim.core;
 
 import java.awt.*;
 
-import javax.swing.*;
-
 public class Simulator {
 	private SimMap map;
 	private Robot bot;

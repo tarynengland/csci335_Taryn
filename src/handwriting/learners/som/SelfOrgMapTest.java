@@ -1,7 +1,7 @@
 package handwriting.learners.som;
 
 import handwriting.core.Drawing;
-import handwriting.core.Duple;
+import learning.Duple;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package handwriting.learners.decisiontree;
 
 import handwriting.core.Drawing;
-import handwriting.core.Duple;
+import learning.Duple;
 import handwriting.core.SampleData;
 import org.junit.Before;
 import org.junit.Test;

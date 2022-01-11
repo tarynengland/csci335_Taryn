@@ -1,12 +1,10 @@
 package handwriting.learners.decisiontree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import handwriting.core.SampleData;
-import handwriting.core.Duple;
-import handwriting.core.Triple;
+import learning.Duple;
 
 public class DTTrainer {
 	private ArrayBlockingQueue<Double> progress;

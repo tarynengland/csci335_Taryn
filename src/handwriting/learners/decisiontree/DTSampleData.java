@@ -1,10 +1,7 @@
 package handwriting.learners.decisiontree;
 
-import handwriting.core.Drawing;
 import handwriting.core.SampleData;
-import handwriting.core.Duple;
-
-import java.util.ArrayList;
+import learning.Duple;
 
 public class DTSampleData extends SampleData {
 	public DTSampleData() {super();}
