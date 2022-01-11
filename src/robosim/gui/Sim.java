@@ -3,11 +3,15 @@ package robosim.gui;
 import handwriting.gui.DrawingEditor;
 import robosim.ai.Controller;
 import robosim.core.SimObjMaker;
+import robosim.core.SimObject;
 import robosim.core.Simulator;
 import search.core.AIReflector;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,8 +31,6 @@ public class Sim extends JFrame {
     JTextArea messages;
     SimPanel sim;
 
-    Simulator map;
-
     AIReflector<Controller> ais;
 
     JMenuItem open, save, close;
@@ -42,10 +44,25 @@ public class Sim extends JFrame {
 
         sim = new SimPanel();
         getContentPane().add(sim, BorderLayout.CENTER);
+        sim.addMouseListener(new SimClickListener());
 
         JMenuBar bar = new JMenuBar();
         setJMenuBar(bar);
         addFileMenu(bar);
+
+        objectToPlace = new JComboBox<>();
+        for (SimObjMaker maker: SimObjMaker.values()) {objectToPlace.addItem(maker);}
+
+        JPanel topButtons = new JPanel();
+        topButtons.add(objectToPlace);
+        getContentPane().add(topButtons, BorderLayout.NORTH);
+    }
+
+    private class SimClickListener extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            sim.add(objectToPlace.getItemAt(objectToPlace.getSelectedIndex()).makeAt(e.getX(), e.getY()));
+        }
     }
 
     private void addFileMenu(JMenuBar bar) {
@@ -57,12 +74,7 @@ public class Sim extends JFrame {
             JFileChooser chooser = new JFileChooser();
             if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 try {
-                    File openee = chooser.getSelectedFile();
-                    Stream<String> stream = Files.lines(openee.toPath());
-                    StringBuilder sb = new StringBuilder();
-                    stream.forEach(s -> sb.append(s).append("\n"));
-                    map.resetObjectsFrom(sb.toString());
-                    map.drawOn(sim);
+                    sim.openFrom(chooser.getSelectedFile());
                 } catch (IOException ex) {
                     oops(ex);
                 }
@@ -74,10 +86,7 @@ public class Sim extends JFrame {
             JFileChooser chooser = new JFileChooser();
             if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 try {
-                    File savee = chooser.getSelectedFile();
-                    PrintWriter out = new PrintWriter(savee);
-                    out.println(map.getMapString());
-                    out.close();
+                    sim.saveTo(chooser.getSelectedFile());
                 } catch (FileNotFoundException ex) {
                     oops(ex);
                 }
@@ -87,5 +96,11 @@ public class Sim extends JFrame {
     }
 
     private void oops(IOException e) {
+        e.printStackTrace();
+    }
+
+    public static void main(String[] args) {
+        Sim s = new Sim();
+        s.setVisible(true);
     }
 }

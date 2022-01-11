@@ -13,10 +13,16 @@ public class Simulator {
 	
 	public Simulator(double width, double height) {
 		map = new SimMap();
-		this.width = width;
-		this.height = height;
-		bot = new Robot(width/2, height/2, 0);
-		reset();
+		resize(width, height);
+	}
+
+	public void resize(double width, double height) {
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			bot = new Robot(width / 2, height / 2, 0);
+			reset();
+		}
 	}
 	
 	public void reset() {
@@ -25,8 +31,8 @@ public class Simulator {
 	}
 	
 	public void add(SimObject obj) {
-		if (obj instanceof Robot) {
-			bot = (Robot)obj;
+		if (obj instanceof Robot bot) {
+			this.bot = bot;
 			reset();
 		} else {
 			map.add(obj);
@@ -37,13 +43,7 @@ public class Simulator {
 		map = new SimMap(mapString);
 	}
 	
-	public void drawOn(JComponent canvas) {
-		this.width = canvas.getWidth();
-		this.height = canvas.getHeight();
-		Graphics gc = canvas.getGraphics();
-		gc.setColor(Color.WHITE);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		
+	public void drawOn(Graphics gc) {
 		bot.render(gc);
 		map.drawOn(gc, bot);
 	}
