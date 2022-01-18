@@ -14,7 +14,11 @@ public class BreadthFirstDemoTest {
         BreadthFirstDemo bfd = new BreadthFirstDemo(new Pos(2, 3));
         bfd.solve(new Pos(0, 0));
         assertEquals(6, bfd.getSolutionLength());
-        validatePath(bfd.getResult().get().searchPath(), new Pos(0, 0), new Pos(2, 3));
+        ArrayDeque<Pos> path = bfd.getResult().get().searchPath();
+        System.out.println("Path: "+ path);
+        System.out.println("Nodes expanded: " + bfd.getNumNodes());
+        System.out.println("Depth: " + bfd.getMaxDepth());
+        validatePath(path, new Pos(0, 0), new Pos(2, 3));
     }
 
     public static void validatePath(ArrayDeque<Pos> path, Pos start, Pos end) {

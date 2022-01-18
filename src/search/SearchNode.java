@@ -14,14 +14,13 @@ public class SearchNode<T> {
         this.depth = parent.map(node -> 1 + node.depth).orElse(0);
     }
 
-    private void updateSearchPath(ArrayDeque<T> path) {
-        path.addFirst(value);
-        parent.ifPresent(p -> p.updateSearchPath(path));
-    }
-
     public ArrayDeque<T> searchPath() {
         ArrayDeque<T> path = new ArrayDeque<>();
-        updateSearchPath(path);
+        Optional<SearchNode<T>> current = Optional.of(this);
+        while (current.isPresent()) {
+            path.addFirst(current.get().getValue());
+            current = current.get().parent;
+        }
         return path;
     }
 

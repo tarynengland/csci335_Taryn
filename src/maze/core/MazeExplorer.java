@@ -25,6 +25,10 @@ public class MazeExplorer {
 		return m.getTreasures();
 	}
 
+	public Set<Pos> getAllTreasureFound() {
+		return treasureFound;
+	}
+
 	public int getNumTreasuresFound() {
 		return treasureFound.size();
 	}
@@ -52,7 +56,7 @@ public class MazeExplorer {
 			treasures.append(";");
 			treasures.append(t.toString());
 		}
-		return "@" + location.toString() + treasures.toString();
+		return "@" + location.toString() + treasures;
 	}
 	
 	@Override
