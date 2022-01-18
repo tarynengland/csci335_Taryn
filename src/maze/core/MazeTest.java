@@ -2,9 +2,8 @@ package maze.core;
 
 import static org.junit.Assert.*;
 
+import core.Pos;
 import org.junit.Test;
-
-import search.core.BestFirstSearcher;
 
 public class MazeTest {
 	final static int NUM_TESTS = 100;
@@ -14,12 +13,11 @@ public class MazeTest {
 	public void testNoTreasure() {
 		for (int i = 0; i < NUM_TESTS; ++i) {
 			Maze m = new Maze(WIDTH, HEIGHT);
-			m.makeMaze(new MazeCell(0, 0), new MazeCell(WIDTH - 1, HEIGHT - 1), 0, 1);
-			BestFirstSearcher<MazeExplorer> searcher = new BestFirstSearcher<>(new maze.heuristics.BreadthFirst());
-			MazeExplorer endNode = new MazeExplorer(m, m.getEnd());
-			searcher.solve(new MazeExplorer(m, m.getStart()), endNode);
+			m.makeMaze(new Pos(0, 0), new Pos(WIDTH - 1, HEIGHT - 1), 0, 1);
+			MazeSearcher searcher = new MazeSearcher(new maze.heuristics.BreadthFirst());
+			searcher.solve(new MazeExplorer(m, m.getStart()));
 			assertTrue(searcher.success());
-			MazePath path = new MazePath(searcher, m);
+			MazePath path = new MazePath(searcher.getResult().get(), m);
 			assertTrue(path.solvesMaze(m));
 		}		
 	}
@@ -28,13 +26,13 @@ public class MazeTest {
 	public void testMany() {
 		for (int i = 0; i < NUM_TESTS; ++i) {
 			Maze m = new Maze(WIDTH, HEIGHT);
-			m.makeMaze(new MazeCell(0, 0), new MazeCell(WIDTH - 1, HEIGHT - 1), 2, 1);
-			BestFirstSearcher<MazeExplorer> searcher = new BestFirstSearcher<>(new maze.heuristics.BreadthFirst());
+			m.makeMaze(new Pos(0, 0), new Pos(WIDTH - 1, HEIGHT - 1), 2, 1);
+			MazeSearcher searcher = new MazeSearcher(new maze.heuristics.BreadthFirst());
 			MazeExplorer endNode = new MazeExplorer(m, m.getEnd());
 			endNode.addTreasures(m.getTreasures());
-			searcher.solve(new MazeExplorer(m, m.getStart()), endNode);
+			searcher.solve(new MazeExplorer(m, m.getStart()));
 			assertTrue(searcher.success());
-			MazePath path = new MazePath(searcher, m);
+			MazePath path = new MazePath(searcher.getResult().get(), m);
 			assertTrue(path.solvesMaze(m));
 		}
 	}
@@ -44,13 +42,12 @@ public class MazeTest {
 		int totalBest = 0, totalBreadth = 0;
 		for (int i = 0; i < NUM_TESTS; ++i) {
 			Maze m = new Maze(WIDTH, HEIGHT);
-			m.makeMaze(new MazeCell(0, 0), new MazeCell(WIDTH - 1, HEIGHT - 1), 0, 1);
-			BestFirstSearcher<MazeExplorer> breadthFirst = new BestFirstSearcher<>(new maze.heuristics.BreadthFirst());
-			BestFirstSearcher<MazeExplorer> bestFirst = new BestFirstSearcher<>((n, goal) -> goal.getLocation().X() - n.getLocation().X());
+			m.makeMaze(new Pos(0, 0), new Pos(WIDTH - 1, HEIGHT - 1), 0, 1);
+			MazeSearcher breadthFirst = new MazeSearcher(new maze.heuristics.BreadthFirst());
+			MazeSearcher bestFirst = new MazeSearcher(n -> m.getGoal().getLocation().getX() - n.getLocation().getX());
 			MazeExplorer startNode = new MazeExplorer(m, m.getStart());
-			MazeExplorer endNode = new MazeExplorer(m, m.getEnd());
-			breadthFirst.solve(startNode, endNode);
-			bestFirst.solve(startNode, endNode);
+			breadthFirst.solve(startNode);
+			bestFirst.solve(startNode);
 			assertTrue(breadthFirst.success());
 			assertTrue(bestFirst.success());
 			totalBest += bestFirst.getNumNodes();

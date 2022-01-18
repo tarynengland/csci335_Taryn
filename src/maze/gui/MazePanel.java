@@ -3,9 +3,9 @@ import java.awt.*;
 
 import javax.swing.*;
 
-import maze.core.Direction;
+import core.Direction;
+import core.Pos;
 import maze.core.Maze;
-import maze.core.MazeCell;
 import maze.core.MazePath;
 
 @SuppressWarnings("serial")
@@ -57,7 +57,7 @@ public class MazePanel extends JPanel {
         for (int x = 0; x < m.getXSize(); ++x) {
             for (int y = 0; y < m.getYSize(); ++y) {
                 g.setColor(Color.black);
-                MazeCell c = new MazeCell(x, y);
+                Pos c = new Pos(x, y);
                 int xBase = (int)((double)x * getXUnit());
                 int yBase = (int)((double)y * getYUnit());
                 
@@ -67,7 +67,7 @@ public class MazePanel extends JPanel {
         }    	
     }
     
-    private void drawCellOutline(Graphics g, MazeCell c, int xBase, int yBase) {
+    private void drawCellOutline(Graphics g, Pos c, int xBase, int yBase) {
     	int xNext = (int)(xBase + getXUnit());
     	int yNext = (int)(yBase + getYUnit());
         if (m.blocked(c, Direction.N)) {
@@ -84,7 +84,7 @@ public class MazePanel extends JPanel {
         }
     }
     
-    private void drawSpecialSquares(Graphics g, MazeCell c, int x, int y, int xFill, int yFill) {
+    private void drawSpecialSquares(Graphics g, Pos c, int x, int y, int xFill, int yFill) {
         if (m.isStart(c)) {
             g.setColor(Color.yellow);
             g.fillRect(x, y, xFill, yFill);
@@ -105,12 +105,12 @@ public class MazePanel extends JPanel {
         int xIndent = (int)(getXUnit() - xFill)/2;
         int yIndent = (int)(getYUnit() - yFill)/2;
         for (int i = 0; i < mp.getLength(); ++i) {
-            MazeCell p = mp.getNth(i);
+            Pos p = mp.getNth(i);
             if (i == mp.getLength() - 1) {
                 g.setColor(Color.green);
             }
-            g.fillRect((int)(p.X() * getXUnit()) + xIndent, 
-                       (int)(p.Y() * getYUnit()) + yIndent, 
+            g.fillRect((int)(p.getX() * getXUnit()) + xIndent,
+                       (int)(p.getY() * getYUnit()) + yIndent,
                        xFill, yFill);
         }
     }

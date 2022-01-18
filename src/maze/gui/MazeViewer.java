@@ -2,17 +2,17 @@ package maze.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.function.ToIntFunction;
 
 import javax.swing.*;
 
-import maze.core.Direction;
+import core.Direction;
+import core.Pos;
 import maze.core.Maze;
-import maze.core.MazeCell;
 import maze.core.MazeExplorer;
 import maze.core.MazePath;
-import search.core.AIReflector;
-import search.core.BestFirstHeuristic;
-import search.core.BestFirstSearcher;
+import core.AIReflector;
+import maze.core.MazeSearcher;
 
 @SuppressWarnings("serial")
 public class MazeViewer extends JFrame {
@@ -25,16 +25,16 @@ public class MazeViewer extends JFrame {
     private JTextField nField, dField, bField, sField;
     private JTextField mazeX, mazeY, treasure;
     private MoveListen mListen = new MoveListen();
-    private AIReflector<BestFirstHeuristic<MazeExplorer>> heuristics;
+    private AIReflector<ToIntFunction<MazeExplorer>> heuristics;
     private JComboBox<String> heuristicChooser;
-    private HashMap<JButton,Direction> directionMap;
+    private HashMap<JButton, Direction> directionMap;
     
     public MazeViewer() {
         setTitle("Maze Viewer");
         setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        heuristics = new AIReflector<BestFirstHeuristic<MazeExplorer>>(BestFirstHeuristic.class, "maze.heuristics");
+        heuristics = new AIReflector<>(ToIntFunction.class, "maze.heuristics");
         heuristicChooser = new JComboBox<>();
         for (String hStr: heuristics.getTypeNames()) {
         	heuristicChooser.addItem(hStr);
@@ -138,8 +138,8 @@ public class MazeViewer extends JFrame {
             int ySize = Integer.parseInt(mazeY.getText());
             m = new Maze(xSize, ySize);
             double perfection = (double)perfector.getValue()/(double)perfector.getMaximum();
-            m.makeMaze(new MazeCell(m.getXMax(), m.getYMin()),
-                       new MazeCell(m.getXMin(), m.getYMax()),
+            m.makeMaze(new Pos(m.getXMax(), m.getYMin()),
+                       new Pos(m.getXMin(), m.getYMax()),
                        Integer.parseInt(treasure.getText()), perfection);
             mp.setMaze(m);
             mp.repaint();
@@ -149,7 +149,7 @@ public class MazeViewer extends JFrame {
     private class MoveListen implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == startPath || path == null) {
-            	path = new MazePath(m.getStart().X(), m.getStart().Y());
+            	path = new MazePath(m.getStart().getX(), m.getStart().getY());
             	mp.setPath(path);
             	mp.repaint();
             }
@@ -157,7 +157,7 @@ public class MazeViewer extends JFrame {
             if (directionMap.containsKey(e.getSource())) {
             	Direction d = directionMap.get(e.getSource());
             	if (!m.blocked(path.getEnd(), d)) {
-            		MazeCell next = d.successor(path.getEnd());
+            		Pos next = d.successor(path.getEnd());
             		if (m.within(next)) {
             			path.append(next);
             			mp.repaint();
@@ -182,14 +182,11 @@ public class MazeViewer extends JFrame {
     private class SolveMaze implements ActionListener {
         public void actionPerformed(ActionEvent e) {        
             try {
-				BestFirstHeuristic<MazeExplorer> bfh = heuristics.newInstanceOf(heuristicChooser.getSelectedItem().toString());
-				BestFirstSearcher<MazeExplorer> searcher = new BestFirstSearcher<MazeExplorer>(bfh);
-				MazeExplorer endNode = new MazeExplorer(m, m.getEnd());
-				endNode.addTreasures(m.getTreasures());
-				
-				searcher.solve(new MazeExplorer(m, m.getStart()), endNode);
+				ToIntFunction<MazeExplorer> bfh = heuristics.newInstanceOf(heuristicChooser.getSelectedItem().toString());
+				MazeSearcher searcher = new MazeSearcher(bfh);
+				searcher.solve(new MazeExplorer(m, m.getStart()));
 				if (searcher.success()) {
-					path = new MazePath(searcher, m);
+					path = new MazePath(searcher.getResult().get(), m);
 					mp.setPath(path);
 					mp.repaint();
 					displayStats(searcher);
@@ -204,13 +201,13 @@ public class MazeViewer extends JFrame {
         }
     }
     
-    private void displayStats(BestFirstSearcher<MazeExplorer> searcher) {
+    private void displayStats(MazeSearcher searcher) {
     	nField.setText(Integer.toString(searcher.getNumNodes()));
         dField.setText(Integer.toString(searcher.getMaxDepth()));
         double b = searcher.getBranchingFactor(0.01);
         b = (double)((int)(b * 100)) / 100;
         bField.setText(Double.toString(b));
-        sField.setText(Integer.toString(searcher.numSteps()));
+        sField.setText(Integer.toString(searcher.getSolutionLength()));
     }
     
     public static void main(String[] args) {

@@ -5,22 +5,23 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import search.core.BestFirstObject;
+import core.Pos;
 
-public class MazeExplorer implements BestFirstObject<MazeExplorer> {
+public class MazeExplorer {
 	private Maze m;
-	private MazeCell location;
-	private TreeSet<MazeCell> treasureFound; 
+	private Pos location;
+	private TreeSet<Pos> treasureFound;
+	private MazeExplorer goal;
 	
-	public MazeExplorer(Maze m, MazeCell location) {
+	public MazeExplorer(Maze m, Pos location) {
 		this.m = m;
 		this.location = location;
-		treasureFound = new TreeSet<MazeCell>();
+		treasureFound = new TreeSet<>();
 	}
 	
-	public MazeCell getLocation() {return location;}
+	public Pos getLocation() {return location;}
 
-	public Set<MazeCell> getAllTreasureFromMaze() {
+	public Set<Pos> getAllTreasureFromMaze() {
 		return m.getTreasures();
 	}
 
@@ -28,20 +29,26 @@ public class MazeExplorer implements BestFirstObject<MazeExplorer> {
 		return treasureFound.size();
 	}
 
-	@Override
+	public MazeExplorer getGoal() {
+		if (goal == null) {
+			goal = m.getGoal();
+		}
+		return goal;
+	}
+
 	public ArrayList<MazeExplorer> getSuccessors() {
 		ArrayList<MazeExplorer> result = new ArrayList<MazeExplorer>();
 		// TODO: It should add as a successor every adjacent, unblocked neighbor square.
         return result;
 	}
 	
-	public void addTreasures(Collection<MazeCell> treasures) {
+	public void addTreasures(Collection<Pos> treasures) {
 		treasureFound.addAll(treasures);
 	}
 	
 	public String toString() {
 		StringBuilder treasures = new StringBuilder();
-		for (MazeCell t: treasureFound) {
+		for (Pos t: treasureFound) {
 			treasures.append(";");
 			treasures.append(t.toString());
 		}
@@ -53,16 +60,15 @@ public class MazeExplorer implements BestFirstObject<MazeExplorer> {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof MazeExplorer) {
-			return achieves((MazeExplorer)other);
+		if (other instanceof MazeExplorer that) {
+			return this.location.equals(that.location) && this.treasureFound.equals(that.treasureFound);
 		} else {
 			return false;
 		}
 	}
 
-	@Override
-	public boolean achieves(MazeExplorer goal) {
-		return this.location.equals(goal.location) && this.treasureFound.equals(goal.treasureFound);
+	public boolean achievesGoal() {
+		return this.equals(getGoal());
 	}
 
 	public Maze getM() {

@@ -1,58 +1,64 @@
 package maze.core;
 
+import core.Direction;
+import core.Pos;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Maze {
-    
     private int xSize, ySize;
-    private MazeCell start, end;
+    private Pos start, end;
     
     private EnumSet<Direction>[][] barriers;
-    private MazeCell[][] cells;
-    private Set<MazeCell> treasures;
+    private Pos[][] cells;
+    private Set<Pos> treasures;
     
-    // Pre: xSize > 0; ySize > 0
-    // Post: Generates a maze in which every cell is barricaded from every
-    //       other cell
     @SuppressWarnings("unchecked")
     public Maze(int xSize, int ySize) {
         this.xSize = xSize;
         this.ySize = ySize;
         start = end = null;
-        cells = new MazeCell[xSize][ySize];
+        cells = new Pos[xSize][ySize];
         barriers = new EnumSet[xSize][ySize];
         for (int x = 0; x < xSize; ++x) {
             for (int y = 0; y < ySize; ++y) {
-                cells[x][y] = new MazeCell(x, y);
+                cells[x][y] = new Pos(x, y);
                 barriers[x][y] = EnumSet.allOf(Direction.class);
             }
         }
         
-        treasures = new LinkedHashSet<MazeCell>();
+        treasures = new LinkedHashSet<>();
+    }
+
+    public MazeExplorer getGoal() {
+        MazeExplorer endNode = new MazeExplorer(this, this.getEnd());
+        endNode.addTreasures(this.getTreasures());
+        return endNode;
     }
     
     // Pre: 0 <= perfection <= 1.0
     // Post: Randomly generates a maze of the given size, starting at start
     //       and ending at end; if perfection = 1, the maze is perfect; if
     //       perfection = 0, the maze has very few walls
-    public void makeMaze(MazeCell start, MazeCell end, int numTreasures, double perfection) {
+    public void makeMaze(Pos start, Pos end, int numTreasures, double perfection) {
         this.start = start;
         this.end = end;
         
-        ArrayList<MazeCell> openList = new ArrayList<MazeCell>();
-        Map<MazeCell,MazeCell> predecessors = new HashMap<MazeCell,MazeCell>();
-        Set<MazeCell> visited = new LinkedHashSet<MazeCell>();
+        ArrayList<Pos> openList = new ArrayList<>();
+        Map<Pos,Pos> predecessors = new HashMap<>();
+        Set<Pos> visited = new LinkedHashSet<>();
         openList.add(end);
         while (openList.size() > 0) {
-            MazeCell current = openList.remove(openList.size() - 1);
+            Pos current = openList.remove(openList.size() - 1);
             if (!visited.contains(current)) {
                 visited.add(current);
                 if (predecessors.containsKey(current)) {
                     knockDownBetween(current, predecessors.get(current));
                 }
-                ArrayList<MazeCell> neighbors = getNeighbors(current);
+                ArrayList<Pos> neighbors = getNeighbors(current);
                 Collections.shuffle(neighbors);
-                for (MazeCell neighbor: neighbors) {
+                for (Pos neighbor: neighbors) {
                     openList.add(neighbor);
                     predecessors.put(neighbor, current);
                 }
@@ -71,11 +77,11 @@ public class Maze {
     }
 
     private void addTreasure(int numTreasures) {
-        treasures = new LinkedHashSet<MazeCell>();
+        treasures = new LinkedHashSet<>();
         int numUntried = xSize * ySize - 2;
         for (int i = 0; i < xSize; ++i) {
             for (int j = 0; j < ySize; ++j) {
-                MazeCell candidate = new MazeCell(i, j);
+                Pos candidate = new Pos(i, j);
                 if (!candidate.equals(getStart()) && !candidate.equals(getEnd())) {
                     double prob = (double)numTreasures / (double)numUntried;
                     if (Math.random() < prob) {
@@ -88,18 +94,18 @@ public class Maze {
         }
     }
     
-    public MazeCell getStart() {return start;}
-    public MazeCell getEnd() {return end;}
+    public Pos getStart() {return start;}
+    public Pos getEnd() {return end;}
     
-    public boolean within(MazeCell mc) {
-    	return mc.X() >= getXMin() && mc.X() <= getXMax() && mc.Y() >= getYMin() && mc.Y() <= getYMax();
+    public boolean within(Pos mc) {
+    	return mc.getX() >= getXMin() && mc.getX() <= getXMax() && mc.getY() >= getYMin() && mc.getY() <= getYMax();
     }
-    public boolean isStart(MazeCell mc) {return start.equals(mc);}
-    public boolean isEnd(MazeCell mc) {return end.equals(mc);}
-    public boolean isTreasure(MazeCell mc) {return treasures.contains(mc);}
-    public boolean isTreasure(int x, int y) {return isTreasure(new MazeCell(x, y));}
+    public boolean isStart(Pos mc) {return start.equals(mc);}
+    public boolean isEnd(Pos mc) {return end.equals(mc);}
+    public boolean isTreasure(Pos mc) {return treasures.contains(mc);}
+    public boolean isTreasure(int x, int y) {return isTreasure(new Pos(x, y));}
     
-    public Set<MazeCell> getTreasures() {return Collections.unmodifiableSet(treasures);}
+    public Set<Pos> getTreasures() {return Collections.unmodifiableSet(treasures);}
     
     public int getXMin() {return 0;}
     public int getYMin() {return 0;}
@@ -111,16 +117,16 @@ public class Maze {
     // Pre: c.isNeighbor(n)
     // Post: Returns true if it is not possible to travel from c to n in one
     //       step; returns false otherwise
-    public boolean blocked(MazeCell c, MazeCell n) {
+    public boolean blocked(Pos c, Pos n) {
         if (!c.isNeighbor(n)) {
             throw new IllegalArgumentException(c + " is not a neighbor to " + n);
         }
         
-        return barriers[c.X()][c.Y()].contains(Direction.between(c, n));
+        return barriers[c.getX()][c.getY()].contains(Direction.between(c, n));
     }
     
-    public boolean blocked(MazeCell c, Direction d) {
-    	return blocked(c.X(), c.Y(), d);
+    public boolean blocked(Pos c, Direction d) {
+    	return blocked(c.getX(), c.getY(), d);
     }
     
     public boolean blocked(int x, int y, Direction d) {
@@ -158,9 +164,9 @@ public class Maze {
     
     // Pre: first and second are Manhattan neighbors
     // Post: Knocks down a wall between them, if it exists
-    private void knockDownBetween(MazeCell first, MazeCell second) {
-    	barriers[first.X()][first.Y()].remove(Direction.between(first, second));
-    	barriers[second.X()][second.Y()].remove(Direction.between(second, first));
+    private void knockDownBetween(Pos first, Pos second) {
+    	barriers[first.getX()][first.getY()].remove(Direction.between(first, second));
+    	barriers[second.getX()][second.getY()].remove(Direction.between(second, first));
     	
     	if (blocked(first, second) || blocked(second, first)) {
     		throw new IllegalStateException("knock down did not work");
@@ -170,15 +176,8 @@ public class Maze {
     // Pre: none
     // Post: Returns all legal neighbors of current in an arbitrary
     //       ordering, disregarding walls completely.
-    public ArrayList<MazeCell> getNeighbors(MazeCell current) {
-        ArrayList<MazeCell> neighbors = new ArrayList<MazeCell>(4);
-        for (Direction d: Direction.values()) {
-        	MazeCell neighbor = d.successor(current);
-        	if (within(neighbor)) {
-        		neighbors.add(neighbor);
-        	}
-        }
-        return neighbors;
+    public ArrayList<Pos> getNeighbors(Pos current) {
+        return current.getNeighbors().stream().filter(this::within).collect(Collectors.toCollection(ArrayList::new));
     }
     
     public static void main(String[] args) {
@@ -193,8 +192,8 @@ public class Maze {
         System.out.println("Before knockdown");
         System.out.println(m);
         
-        m.makeMaze(new MazeCell(m.getXMin(), m.getYMin()),
-                   new MazeCell(m.getXMax(), m.getYMax()), 0, 1);
+        m.makeMaze(new Pos(m.getXMin(), m.getYMin()),
+                   new Pos(m.getXMax(), m.getYMax()), 0, 1);
         System.out.println("Maze-ified");
         System.out.println(m);
     }
