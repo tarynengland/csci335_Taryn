@@ -8,7 +8,7 @@ import java.util.function.ToIntFunction;
 
 public class BestFirstQueue<T> implements SearchQueue<T> {
     // TODO: Implement this class
-    // HINT: Use java.util.PriorityQueue
+    // HINT: Use java.util.PriorityQueue. It will really help you.
 
     public BestFirstQueue(ToIntFunction<T> heuristic) {
         // TODO: Your code here
