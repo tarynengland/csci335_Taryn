@@ -43,6 +43,7 @@ public class MazeExplorer {
 	public ArrayList<MazeExplorer> getSuccessors() {
 		ArrayList<MazeExplorer> result = new ArrayList<MazeExplorer>();
 		// TODO: It should add as a successor every adjacent, unblocked neighbor square.
+		// I added a comment for demonstration purposes.
         return result;
 	}
 	
