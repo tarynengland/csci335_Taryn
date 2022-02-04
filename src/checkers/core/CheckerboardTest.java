@@ -2,6 +2,8 @@ package checkers.core;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class CheckerboardTest {
     public static Checkerboard fromMoves(String moves) {
         Checkerboard board = new Checkerboard();
@@ -11,6 +13,15 @@ public class CheckerboardTest {
             board.move(m);
         }
         return board;
+    }
+
+    @Test
+    public void moveTest() {
+        Checkerboard board = new Checkerboard();
+        assertEquals(board.allRegularMoves(PlayerColor.RED).toString(), "[(2, 1) to (3, 2), (2, 1) to (3, 0), (2, 3) to (3, 4), (2, 3) to (3, 2), (2, 5) to (3, 6), (2, 5) to (3, 4), (2, 7) to (3, 6)]");
+        assertEquals(board.allRegularMoves(PlayerColor.BLACK).toString(), "[(5, 0) to (4, 1), (5, 2) to (4, 3), (5, 2) to (4, 1), (5, 4) to (4, 5), (5, 4) to (4, 3), (5, 6) to (4, 7), (5, 6) to (4, 5)]");
+        assertEquals(0, board.allCaptureMoves(PlayerColor.RED).size());
+        assertEquals(0, board.allCaptureMoves(PlayerColor.BLACK).size());
     }
 
     @Test
