@@ -12,7 +12,7 @@ public class SOMSentimentBridge implements Classifier<Histogram<String>, String>
     private SOMRecognizer<HashMap<String,Double>,String> inner;
 
     public SOMSentimentBridge(int mapSide) {
-        inner = new SOMRecognizer<>(mapSide, HashMap::new, Cosine::cosineSimilarity, Cosine::weightedAverage);
+        inner = new SOMRecognizer<>(mapSide, HashMap::new, BagOfWordsFuncs::cosineSimilarity, BagOfWordsFuncs::weightedAverage);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package learning.core;
 
-import core.Duple;
-import learning.sentiment.core.Cosine;
+import learning.sentiment.core.BagOfWordsFuncs;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -77,6 +76,6 @@ public class Histogram<T> implements Iterable<T> {
     }
 
     public double cosineDistance(Histogram<T> other) {
-        return Cosine.cosineDistance(this.counts, other.counts);
+        return BagOfWordsFuncs.cosineDistance(this.counts, other.counts);
     }
 }
