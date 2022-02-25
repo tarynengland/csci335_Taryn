@@ -45,7 +45,7 @@ public class DrawingEditor extends JFrame {
 	
 	private Drawing d() {return view.getDrawing();}
 	
-	private Drawing makeNewDrawing() {return new Drawing(20, 20);}
+	private Drawing makeNewDrawing() {return new Drawing(DRAWING_WIDTH, DRAWING_WIDTH);}
 	
 	public DrawingEditor() {
 		setSize(800, 700);

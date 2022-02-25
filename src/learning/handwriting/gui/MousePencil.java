@@ -8,6 +8,7 @@ import java.awt.event.MouseMotionListener;
 public class MousePencil implements MouseMotionListener {
 	private DrawingPanel v;
 	private boolean isDrawing;
+	private static final int PEN_SIZE = 2;
 	
 	public MousePencil(DrawingPanel v) {
 		v.addMouseMotionListener(this);
@@ -32,7 +33,11 @@ public class MousePencil implements MouseMotionListener {
 	public void mouseDragged(MouseEvent e) {
 		int x = e.getX() / v.xCell();
 		int y = e.getY() / v.yCell();
-		d().set(x, y, isDrawing());
+		for (int i = 0; i < PEN_SIZE; i++) {
+			for (int j = 0; j < PEN_SIZE; j++) {
+				d().set(x + i, y + j, isDrawing());
+			}
+		}
 		v.repaint();
 	}
 
