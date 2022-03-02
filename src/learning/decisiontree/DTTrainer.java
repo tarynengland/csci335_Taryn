@@ -62,6 +62,9 @@ public class DTTrainer<V,L, F, FV extends Comparable<FV>> {
 			//  feature/value combination has the highest gain. Use that combination, as
 			//  well as recursively created left and right nodes, to create the new
 			//  interior node.
+			//  Note: It is possible for the split to fail; that is, you can have a split
+			//  in which one branch has zero elements. In this case, return a leaf node
+			//  containing the most popular label in the branch that has elements.
 			return null;
 		}		
 	}
