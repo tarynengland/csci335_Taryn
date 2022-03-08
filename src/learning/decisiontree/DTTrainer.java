@@ -77,7 +77,9 @@ public class DTTrainer<V,L, F, FV extends Comparable<FV>> {
 		return h.getPluralityWinner();
 	}
 
-	// TODO: Generate a new dataset by sampling randomly with replacement.
+	// TODO: Generates a new data set by sampling randomly with replacement. It should return
+	//    an `ArrayList` that is the same length as `data`, where each element is selected randomly
+	//    from `data`. Should pass `DTTest.testResample()`.
 	public static <V,L> ArrayList<Duple<V,L>> resample(ArrayList<Duple<V,L>> data) {
 		return null;
 	}
