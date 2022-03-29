@@ -35,6 +35,9 @@ public class MarkovChain<L,S> {
 
     // Returns P(sequence | label)
     // Should pass SimpleMarkovTest.testSourceProbabilities() and MajorMarkovTest.phraseTest()
+    //
+    // HINT: Be sure to add 1 to both the numerator and denominator when finding the probability of a
+    // transition. This helps avoid sending the probability to zero.
     public double probability(ArrayList<S> sequence, L label) {
         // TODO: YOUR CODE HERE
         return 0.0;
