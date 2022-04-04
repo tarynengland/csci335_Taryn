@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SimpleMarkovTest {
     private MarkovLanguage chains;
@@ -74,12 +75,13 @@ public class SimpleMarkovTest {
 
     @Test
     public void testSourceProbabilities() throws IOException {
-        double[] expected = new double[]{9.220588962167055E-15, 2.9908441275897356E-21, 1.8614707436530848E-26, 2.450099509321512E-22};
-        int i = 0;
         for (String filename: new String[]{"books/english_test.txt", "books/spanish_test.txt"}) {
-            for (String language: new String[]{"English", "Spanish"}) {
-                assertEquals(expected[i], chains.probability(file2chars(filename), language), 1.0E-30);
-                i += 1;
+            double eng = chains.probability(file2chars(filename), "English");
+            double spa = chains.probability(file2chars(filename), "Spanish");
+            if (filename.contains("english")) {
+                assertTrue(eng > spa);
+            } else {
+                assertTrue(eng < spa);
             }
         }
     }
