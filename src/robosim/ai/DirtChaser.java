@@ -49,13 +49,4 @@ public class DirtChaser implements Controller {
 			return Optional.empty();
 		}
 	}
-
-	public boolean facingDirt(Simulator sim) {
-		for (Duple<SimObject, Polar> obj: sim.allVisibleObjects()) {
-			if (obj.getFirst().isVacuumable()) {
-				return true;
-			}
-		}
-		return false;
-	}
 }
