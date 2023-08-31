@@ -29,8 +29,18 @@ public class MarkovChain<L,S> {
 
     // Increase the count for the transition from prev to next.
     // Should pass SimpleMarkovTest.testCreateChains().
+
+    //https://stackoverflow.com/questions/2774608/how-do-i-access-nested-hashmaps-in-java
+    // Solution or answer 5 really helped me figure out how I needed to structure checking vaules
+    // and going about bumping the values if they needed to get bumped
     public void count(Optional<S> prev, L label, S next) {
         // TODO: YOUR CODE HERE
+        if(!label2symbol2symbol.containsKey(label)){
+            label2symbol2symbol.put(label,new HashMap<>());
+        }if(!label2symbol2symbol.get(label).containsKey(prev)) {
+            label2symbol2symbol.get(label).put(prev, new Histogram<>());
+        }
+        label2symbol2symbol.get(label).get(prev).bump(next);
     }
 
     // Returns P(sequence | label)
