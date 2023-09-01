@@ -30,6 +30,7 @@ public class MarkovChain<L,S> {
     // Increase the count for the transition from prev to next.
     // Should pass SimpleMarkovTest.testCreateChains().
 
+
     //https://stackoverflow.com/questions/2774608/how-do-i-access-nested-hashmaps-in-java
     // Solution or answer from Jay Askren from May 5 2010 really helped me figure out how I needed to structure checking vaules
     // and going about bumping the values if they needed to get bumped
@@ -48,6 +49,7 @@ public class MarkovChain<L,S> {
     //
     // HINT: Be sure to add 1 to both the numerator and denominator when finding the probability of a
     // transition. This helps avoid sending the probability to zero.
+
 
     //https://stackoverflow.com/questions/32578239/markov-chains-random-text-based-on-probability-java#:~:text=import%20java.util.Random%3B%20public%20class%20MarkovChainTest%20%7B%20private%20static,%2B%20%22%29%20%3C%20%22%20%2B%20val%29%3B%20%7D%20%7D
     // This and the previous link helped me sort of figure out how I would need to arrange my probability
@@ -74,13 +76,29 @@ public class MarkovChain<L,S> {
     // Should pass MajorMarkovTest.testSentenceDistributions()
     public LinkedHashMap<L,Double> labelDistribution(ArrayList<S> sequence) {
         // TODO: YOUR CODE HERE
-        return null;
+        LinkedHashMap<L, Double> DisMap = new LinkedHashMap<>();
+        double disProb = 0.0;
+        for(L lable: label2symbol2symbol.keySet()) {
+            double chances = probability(sequence, lable);
+            DisMap.put(lable, chances);
+            disProb += chances;
+        }for(L lable: DisMap.keySet()){
+            double normalize = DisMap.get(lable)/disProb;
+            DisMap.put(lable, normalize);
+        }
+        return DisMap;
     }
 
     // Calls labelDistribution(). Returns the label with highest probability.
     // Should pass MajorMarkovTest.bestChainTest()
+
+
+    //https://stackoverflow.com/questions/49470423/get-the-highest-values-in-a-hashmap-in-java#:~:text=int%20max%20%3D%20Collections.max%20%28map.values%20%28%29%29%3B%20Now%20iterate,%28entry.getValue%20%28%29%3D%3Dmax%29%20%7B%20keys.add%20%28entry.getKey%20%28%29%29%3B%20%7D%20%7D
+    // Helped piece together some of the starting code for finding the right way to getting the highest value from
+    // the labelDistribution function and get an idea of looking through all the proceeding codes to find the rest.
     public L bestMatchingChain(ArrayList<S> sequence) {
         // TODO: YOUR CODE HERE
-        return null;
+        LinkedHashMap<L, Double> highest = labelDistribution(sequence);
+        return highest.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
     }
 }
