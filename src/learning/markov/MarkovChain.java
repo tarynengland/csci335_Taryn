@@ -31,7 +31,7 @@ public class MarkovChain<L,S> {
     // Should pass SimpleMarkovTest.testCreateChains().
 
     //https://stackoverflow.com/questions/2774608/how-do-i-access-nested-hashmaps-in-java
-    // Solution or answer 5 really helped me figure out how I needed to structure checking vaules
+    // Solution or answer from Jay Askren from May 5 2010 really helped me figure out how I needed to structure checking vaules
     // and going about bumping the values if they needed to get bumped
     public void count(Optional<S> prev, L label, S next) {
         // TODO: YOUR CODE HERE
@@ -48,9 +48,26 @@ public class MarkovChain<L,S> {
     //
     // HINT: Be sure to add 1 to both the numerator and denominator when finding the probability of a
     // transition. This helps avoid sending the probability to zero.
+
+    //https://stackoverflow.com/questions/32578239/markov-chains-random-text-based-on-probability-java#:~:text=import%20java.util.Random%3B%20public%20class%20MarkovChainTest%20%7B%20private%20static,%2B%20%22%29%20%3C%20%22%20%2B%20val%29%3B%20%7D%20%7D
+    // This and the previous link helped me sort of figure out how I would need to arrange my probability
+    // function with dealing with doubles and running through a for loop.
+    // Java help me remember about the simplifying for loop code.
     public double probability(ArrayList<S> sequence, L label) {
         // TODO: YOUR CODE HERE
-        return 0.0;
+        double transProb = 1.0;
+        Optional<S> previous = Optional.empty();
+        for (S s : sequence) {
+            if (label2symbol2symbol.get(label).containsKey(previous)) {
+                Histogram<S> hist = label2symbol2symbol.get(label).get(previous);
+                double histprob = ((double) (hist.getCountFor(s) + 1) / (double) (hist.getTotalCounts() + 1));
+                transProb *= histprob;
+            }
+            // I initially passed the simple test and had to go back and add this line because if the
+            // linked Hashmap didn't have the previous key with the label it would
+            previous = Optional.of(s);
+        }
+        return transProb;
     }
 
     // Return a map from each label to P(label | sequence).
