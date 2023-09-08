@@ -19,6 +19,10 @@ public class QTable {
     // TODO: Find the action for the given state that has the highest q value.
     //  Should pass QTableTest.testBestAction()
     public int getBestAction(int state) {
+
+
+
+
         return -1;
     }
 
@@ -26,6 +30,11 @@ public class QTable {
     //  visits. Returns false otherwise.
     //  Should pass QTableTest.testIsExploring()
     public boolean isExploring(int state) {
+        for( int i = 0; i < visits[state].length; i++){
+            if ( visits[state][i] < targetVisits){
+                return true;
+            }
+        }
         return false;
     }
 
