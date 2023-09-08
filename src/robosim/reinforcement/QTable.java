@@ -90,9 +90,36 @@ public class QTable {
     //  Should pass QTableTest.testSenseActLearn()
     //
     //  Q update formula:
-    //    Q(s, a) = (1 - learningRate) * Q(s, a) + learningRate * (discount * maxa(Q(s', a)) + r(s))
+    //    Q(s, a) = (1 - learningRate) * Q(s, a) + learningRate *
+    //    (discount * maxa(Q(s', a)) + r(s))
+
+
+    // https://www.freecodecamp.org/news/an-introduction-to-q-learning-reinforcement-learning-14ac0b4493cc/
+    // Steps 4 and 5 from the site above along with my notes from class helped with trying to
+    // figure out which pieces went where and how to use some of the variables from above not
+    // used within this function for getting the update formula.
+
     public int senseActLearn(int newState, double reward) {
-        return -1;
+        // private ints from above used for getLearningRate
+        double learnrate = getLearningRate(lastState,lastAction);
+        // Saw the getQ function from below and what it did after just typing 'q' trying to see
+        // all there was already in this folder dealing with the q-values.
+        double updateQ = ((1-learnrate) * getQ(lastState,lastAction)) + learnrate *
+                (discount * getQ(newState,getBestAction(newState)) + reward);
+        q[lastState][lastAction] = updateQ;
+        visits[lastState][lastAction] ++;
+        int action = 0;
+        if (isExploring(newState)){
+            action = leastVisitedAction(newState);
+        }
+        else{
+            action = getBestAction(newState);
+        }
+        // I feel like there was a way to update both of these variables in one line of code
+        // or am I just mixing that up with something else??
+        lastAction = action;
+        lastState = newState;
+        return action;
     }
 
     public QTable(int states, int actions, int startState, int targetVisits, int rateConstant, double discount) {
