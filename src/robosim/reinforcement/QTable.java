@@ -12,23 +12,43 @@ public class QTable {
     // TODO:
     //  Calculate the learning rate using this formula: 1/(1 + total visits for this (state, action) pair/rateConstant)
     //  Should pass QTableTest.testLearningRate().
+
+    // Literally just applied the formula provided to me above and it worked.
+
     public double getLearningRate(int state, int action) {
         return (1/(1 + (visits[state][action]/rateConstant)));
     }
 
     // TODO: Find the action for the given state that has the highest q value.
     //  Should pass QTableTest.testBestAction()
+
+    // It took me awhile to notice that the action I was looking for the second
+    // indexed item in the array and I could probably just have that be what I
+    // was really keeping track of as I was looping through the state.
+    // Also having done the isExploring function helped me think about how
+    // to loop through the actions of a state
+
     public int getBestAction(int state) {
-
-
-
-
-        return -1;
+        int best = 0;
+        for (int i = 0; i < q[state].length; i++){
+            if (q[state][best] < q[state][i]){
+                best = i;
+            }
+        }
+        return best;
     }
 
     // TODO: Returns true if any action for this state is below the target
     //  visits. Returns false otherwise.
     //  Should pass QTableTest.testIsExploring()
+
+    // Looking back at the formula provided at the beginning helped me see
+    // how I could structure my if statement to see where my actions would
+    // be located at to see if it had reached the target value for visits.
+    // I figured a for loop would help simplify looking through a state as
+    // opposed to a while loop that way I would not have to update anything
+    // outside my iterations to stop when I needed to and still see all actions.
+
     public boolean isExploring(int state) {
         for( int i = 0; i < visits[state].length; i++){
             if ( visits[state][i] < targetVisits){
@@ -40,8 +60,22 @@ public class QTable {
 
     // TODO: Returns the least visited action in state.
     //  Should pass QTableTest.testLeastVisitedAction()
+
+    // I had the same approach as above for the best q value, but I had
+    // to switch my lesser than to a greater sign contrary to what I had
+    // assumed based on the previous function. I first thought that if
+    // the indexed 'i' value was greater to the least value it was least visited
+    // yet in coding that was not what was showing on first test through
+    // so I switched it then it passed the test.
+
     public int leastVisitedAction(int state) {
-        return -1;
+        int least = 0;
+        for (int i = 0; i < visits[state].length; i++){
+            if( visits[state][least] > visits[state][i]){
+                least = i;
+            }
+        }
+        return least;
     }
 
     // TODO:
