@@ -41,10 +41,28 @@ public class MazeExplorer {
 	}
 
 	public ArrayList<MazeExplorer> getSuccessors() {
-		ArrayList<MazeExplorer> result = new ArrayList<MazeExplorer>();
 		// TODO: It should add as a successor every adjacent, unblocked neighbor square.
 		// I added a comment for demonstration purposes.
-        return result;
+
+		//https://github.com/alexander-jackson/maze-solving/blob/master/AStarMazeSolver.java
+		// This repo helped me sort of figure out how to structure and include in my maze explorer
+		// I had to sort out what needed to be left out and how to fit it into what functions I had
+		// already provided to see how it would work best with this repo.
+
+		ArrayList<MazeExplorer> results = new ArrayList<>();
+		ArrayList<Pos> adjacent = m.getNeighbors(this.location);
+		for( Pos neighbors :adjacent) {
+			if(!m.blocked(this.location,neighbors)){
+				MazeExplorer successor = new MazeExplorer(m, neighbors);
+				//getAllTreasureFromMap only worked for passing the first unit test but didn't work for the second
+				successor.addTreasures(getAllTreasureFound());
+				if(m.isTreasure(successor.getLocation())){
+					successor.treasureFound.add(successor.location);
+				}
+				results.add(successor);
+			}
+		}
+        return results;
 	}
 	
 	public void addTreasures(Collection<Pos> treasures) {
