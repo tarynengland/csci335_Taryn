@@ -13,22 +13,20 @@ public class BestFirstQueue<T> implements SearchQueue<T> {
     // TODO: Implement this class
     // HINT: Use java.util.PriorityQueue. It will really help you.
     // https://codereview.stackexchange.com/questions/143206/a-uniform-cost-and-greedy-best-first-search-implementations
-    abstract class Comparator implements java.util.Comparator<T> {
-    }
-    
-    private PriorityQueue<SearchNode<T>> priority = new PriorityQueue<>(Comparator);
+
+    private PriorityQueue<SearchNode<T>> priority = new PriorityQueue<>(new java.util.Comparator<SearchNode<T>>() {
+        @Override
+        public int compare(SearchNode<T> t1, SearchNode<T> t2) {
+            int cost1 = t1.getDepth() + heuristic.applyAsInt(t1.getValue());
+            int cost2 = t2.getDepth() + heuristic.applyAsInt(t2.getValue());
+            return Integer.compare(cost1, cost2);
+        }
+    });
     private HashMap<T, Integer> visited = new HashMap<>();
     private ToIntFunction<T> heuristic;
     public BestFirstQueue(ToIntFunction<T> heuristic) {
         // TODO: Your code here
         this.heuristic = heuristic;
-    }
-
-    @Override
-    public int compare(SearchNode<T> t1, SearchNode<T> t2) {
-        double cost1 = t1.getDepth() + heuristic.applyAsInt(t1.getValue());
-        double cost2 = t2.getDepth() + heuristic.applyAsInt(t2.getValue());
-        return Double.compare(cost1, cost2);
     }
 
     @Override
