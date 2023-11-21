@@ -23,18 +23,12 @@ public class Knn<V, L> implements Classifier<V, L> {
     @Override
     public L classify(V value) {
         PriorityQueue<Duple<V,L>> queue = new PriorityQueue<>((v1,v2) ->
-            Double.compare(distance.applyAsDouble(value,v2.getFirst()),
-                           distance.applyAsDouble(value, v1.getFirst())));
+            Double.compare(distance.applyAsDouble(value,v1.getFirst()),
+                           distance.applyAsDouble(value, v2.getFirst())));
         Histogram<L> histogram = new Histogram<>();
-        for (Duple<V,L> duple :data){
-            queue.add(duple);
-            if(distance.applyAsDouble(duple.getFirst(),value) <= distance.applyAsDouble(queue.peek().getFirst(), value)){
-                queue.remove();
-                queue.add(duple);
-            }
-        }
-        for (Duple<V,L> priority:queue){
-            histogram.bump(priority.getSecond());
+        queue.addAll(data);
+        for (int i =0; i<k; i++){
+            histogram.bump(queue.remove().getSecond());
         }
         return histogram.getPluralityWinner();
     }
